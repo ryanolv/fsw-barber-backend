@@ -1,3 +1,8 @@
 node_modules
+
+
 # Keep environment variables out of version control
 .env
+
+# Prisma generated client (and other generated artifacts)
+/generated
