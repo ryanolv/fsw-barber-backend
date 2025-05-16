@@ -1,4 +1,4 @@
-import { BarberShop } from "../../generated/prisma/client";
+import { BarberShop } from "@prisma/client";
 import { CreateBarberShopInput } from "./barberShop.validation";
 
 export type BarberShopDTO = BarberShop;
