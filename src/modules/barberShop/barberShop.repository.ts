@@ -1,6 +1,5 @@
 import prisma from "../../prisma/client";
-import { BarberShop } from "../../generated/prisma/client";
-import { IBarberShopRepository, BarberShopDTO } from "./barberShop.types";
+import { IBarberShopRepository, BarberShopDTO, CreateBarberShopDTO } from "./barberShop.types";
 
 export class BarberShopRepository implements IBarberShopRepository {
   async findRecentlyAdded(limit: number): Promise<BarberShopDTO[]> {
@@ -9,12 +8,20 @@ export class BarberShopRepository implements IBarberShopRepository {
         created_at: "desc",
       },
       take: limit,
-      // You might want to include related data here in the future, e.g.:
-      // include: { services: true }
     });
     return barberShops;
   }
 
-  // Implement other IBarberShopRepository methods here as needed
-  // e.g., findById, create, etc.
+  async create(data: CreateBarberShopDTO): Promise<BarberShopDTO> {
+    const newBarberShop = await prisma.barberShop.create({
+      data: {
+        title: data.title,
+        address: data.address,
+        phones: data.phones,
+        image_url: data.image_url,
+        description: data.description,
+      },
+    });
+    return newBarberShop;
+  }
 }
