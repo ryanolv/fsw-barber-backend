@@ -1,6 +1,7 @@
 import express, { Express, Request, Response, NextFunction } from "express";
-import cors from "cors"; // For Cross-Origin Resource Sharing
+import cors from "cors";
 import barberShopRoutes from "./modules/barberShop/barberShop.routes";
+import { ApiError } from "./core/errors/ApiError";
 
 const app: Express = express();
 
@@ -17,9 +18,15 @@ app.use("/api/v1/barbershops", barberShopRoutes); // Mount BarberShop routes
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
   console.error("Global Error Handler:", err.stack);
 
-  res.status(500).json({
-    message: "Internal Server Error",
-  });
+  if (err instanceof ApiError) {
+    res.status(err.statusCode).json({
+      message: err.message,
+    });
+  } else {
+    res.status(500).json({
+      message: "Internal Server Error",
+    });
+  }
 });
 
 export default app;
