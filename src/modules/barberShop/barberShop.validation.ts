@@ -32,3 +32,23 @@ export const createBarberShopSchema = z.object({
 });
 
 export type CreateBarberShopInput = z.infer<typeof createBarberShopSchema>;
+
+export const getBarberShopParamsSchema = z.object({
+  params: z.object({
+    barberShopId: z.string().uuid({ message: "BarberShop ID must be a valid UUID in the URL path." }),
+  }),
+});
+
+export type GetBarberShopParamsInput = z.infer<typeof getBarberShopParamsSchema>["params"];
+
+export const searchBarberShopsQuerySchema = z.object({
+  query: z.object({
+    q: z
+      .string({
+        required_error: "Search query 'q' is required.",
+      })
+      .min(1, { message: "Search query must be at least 1 character long." }),
+  }),
+});
+
+export type SearchBarberShopsQueryInput = z.infer<typeof searchBarberShopsQuerySchema>["query"];
