@@ -1,5 +1,10 @@
 import prisma from "../../prisma/client";
-import { IBarberShopRepository, BarberShopDTO, CreateBarberShopDTO } from "./barberShop.types";
+import {
+  IBarberShopRepository,
+  BarberShopDTO,
+  CreateBarberShopDTO,
+  BarberShopWithServicesDTO,
+} from "./barberShop.types";
 
 export class BarberShopRepository implements IBarberShopRepository {
   async findRecentlyAdded(limit: number): Promise<BarberShopDTO[]> {
@@ -19,6 +24,15 @@ export class BarberShopRepository implements IBarberShopRepository {
     return barberShop;
   }
 
+  async findByIdWithServices(id: string): Promise<BarberShopWithServicesDTO | null> {
+    return prisma.barberShop.findUnique({
+      where: { id },
+      include: {
+        services: true,
+      },
+    });
+  }
+
   async create(data: CreateBarberShopDTO): Promise<BarberShopDTO> {
     const newBarberShop = await prisma.barberShop.create({
       data: {
@@ -30,5 +44,19 @@ export class BarberShopRepository implements IBarberShopRepository {
       },
     });
     return newBarberShop;
+  }
+
+  async searchByTitle(searchTerm: string): Promise<BarberShopDTO[]> {
+    return prisma.barberShop.findMany({
+      where: {
+        title: {
+          contains: searchTerm,
+          mode: "insensitive",
+        },
+      },
+      orderBy: {
+        created_at: "desc",
+      },
+    });
   }
 }
